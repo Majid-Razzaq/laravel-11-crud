@@ -15,6 +15,7 @@
 ## Getting Started
 - Clone the repository.
 - Run composer install to install dependencies.
+- Change the .env.example to .env and add your database info
 - Set up your database configuration in the .env file.
 - Run php artisan migrate to set up the necessary tables.
 - Implement and customize as needed.
