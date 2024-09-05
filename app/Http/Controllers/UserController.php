@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     public function index(){
-        $users = User::orderBy('name','ASC')->get();
+        $users = User::orderBy('name','ASC')->paginate(5);
         return view('lists',[
             'users' => $users,
         ]);

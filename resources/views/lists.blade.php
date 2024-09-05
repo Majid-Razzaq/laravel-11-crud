@@ -30,10 +30,12 @@
                                 </tr>
                                 @endforeach
                                 @endif
+
                         </tbody>
 
                     </table>
 
+                    {{ $users->links() }}
 
                 </div>
             </div>
