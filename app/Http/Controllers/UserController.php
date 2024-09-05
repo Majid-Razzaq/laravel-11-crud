@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     public function index(){
-        $users = User::orderBy('name','DESC')->get();
+        $users = User::orderBy('name','ASC')->get();
         return view('lists',[
             'users' => $users,
         ]);
@@ -44,8 +44,62 @@ class UserController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return redirect()->route('home');
-
+        return redirect()->route('home')->with('success','Data updated successfully.');
     }
 
+    // This page will redirect to edit page
+    public function editPage($id){
+        $user = User::find($id);
+        if($user == null){
+            abort(404);
+        }
+        return view('edit',[
+            'user' => $user,
+        ]);
+    }
+
+    // This function will update data
+    public function update(Request $request, $id){
+        
+        $user = User::findOrFail($id);
+        
+        $rules = [
+            'name' => 'required|min:5',
+            'email' => 'required|email',
+            'address' => 'required|min:10',
+        ];
+        $validator = Validator::make($request->all(),$rules);
+        if($validator->passes()){
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->address = $request->address;
+            $user->save();
+
+            return redirect()->route('home')->with('success','Data updated successfully.');
+        }else{
+            return redirect()->route('editPage',$user->id)->withInput()->withErrors($validator);
+        }
+    }
+
+
+    // This method will delete data
+    public function destroy(Request $request){
+        $user = User::find($request->id);
+        if($user == null){
+            Session()->flash('error','User not found');
+            return response()->json([
+                'status' => false,
+                'message' => 'User not found',
+            ]);
+        }else{
+
+            $user->delete();
+            $message = "User deleted successfully.";
+            Session()->flash('success',$message);
+            return response()->json([
+                'status' => true,
+                'message' => $message,
+            ]);
+        }
+    }
 }
